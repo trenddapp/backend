@@ -1,4 +1,6 @@
 clients:
+  coinmarketcap:
+    apiKey: change-me
   etherscan:
     apiKey: change-me
   nftport:
