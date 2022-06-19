@@ -15,7 +15,7 @@ jobs:
       with:
         branch: main
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: dappz-backend-currency-http
+        heroku_app_name: trenddapp-backend-currency-http
         heroku_email: ${{secrets.HEROKU_EMAIL}}
         procfile: "web: bin/currency serve http"
         region: eu
@@ -27,7 +27,7 @@ jobs:
       with:
         branch: main
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: dappz-backend-nft-http
+        heroku_app_name: trenddapp-backend-nft-http
         heroku_email: ${{secrets.HEROKU_EMAIL}}
         procfile: "web: bin/nft serve http"
         region: eu

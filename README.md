@@ -1,2 +1,2 @@
 # backend
-DAPP-Z backend 🔧
+TrendDAPP backend 🔧
