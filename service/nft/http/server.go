@@ -2,11 +2,13 @@ package http
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/dapp-z/backend/service/nft/client/etherscan"
-	"github.com/dapp-z/backend/service/nft/client/nftport"
+	internalhttp "github.com/trenddapp/backend/pkg/http"
+	"github.com/trenddapp/backend/service/nft/client/etherscan"
+	"github.com/trenddapp/backend/service/nft/client/nftport"
 )
 
 type Server struct {
@@ -21,50 +23,50 @@ func NewServer(clientEtherscan etherscan.Client, clientNFTPort nftport.Client) *
 	}
 }
 
-func (s *Server) GetAccountNFTs(ctx *gin.Context) {
+func (s *Server) ListAccountNFTs(ctx *gin.Context) {
 	address := ctx.Param("address")
 	if address == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid address",
-		})
-
+		internalhttp.NewError(http.StatusBadRequest, "invalid address").WriteJSON(ctx)
 		return
 	}
 
-	nfts, err := s.clientEtherscan.GetAccountNFTs(ctx, address)
+	pageSize, err := strconv.Atoi(ctx.Query("page_size"))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-
+		internalhttp.NewError(http.StatusBadRequest, "invalid page_size").WriteJSON(ctx)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"nfts": nfts,
-	})
+	pageToken := ctx.Query("page_token")
+
+	nfts, nextPageToken, err := s.clientEtherscan.ListAccountNFTs(ctx, address, pageSize, pageToken)
+	if err != nil {
+		internalhttp.NewError(http.StatusInternalServerError, "internal server error").WriteJSON(ctx)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"nfts": nfts, "next_page_token": nextPageToken})
 }
 
-func (s *Server) GetContractNFTs(ctx *gin.Context) {
+func (s *Server) ListContractNFTs(ctx *gin.Context) {
 	address := ctx.Param("address")
 	if address == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid address",
-		})
-
+		internalhttp.NewError(http.StatusBadRequest, "invalid address").WriteJSON(ctx)
 		return
 	}
 
-	nfts, err := s.clientNFTPort.GetContractNFTs(ctx, address)
+	pageSize, err := strconv.Atoi(ctx.Query("page_size"))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-
+		internalhttp.NewError(http.StatusBadRequest, "invalid page_size")
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"nfts": nfts,
-	})
+	pageToken := ctx.Query("page_token")
+
+	nfts, nextPageToken, err := s.clientNFTPort.ListContractNFTs(ctx, address, pageSize, pageToken)
+	if err != nil {
+		internalhttp.NewError(http.StatusInternalServerError, "internal server error").WriteJSON(ctx)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"nfts": nfts, "next_page_token": nextPageToken})
 }

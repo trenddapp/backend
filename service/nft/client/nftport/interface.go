@@ -3,11 +3,21 @@ package nftport
 import (
 	"context"
 
-	"github.com/dapp-z/backend/service/nft/model"
+	"github.com/trenddapp/backend/service/nft/model"
 )
 
 type Client interface {
-	GetAccountNFTs(ctx context.Context, address string) ([]model.NFT, error)
-	GetContractNFTs(ctx context.Context, address string) ([]model.NFT, error)
-	GetNFT(ctx context.Context, contractAddress string, tokenID string) (*model.NFT, error)
+	GetNFT(ctx context.Context, contractAddress string, tokenID string) (model.NFT, error)
+	ListAccountNFTs(
+		ctx context.Context,
+		address string,
+		pageSize int,
+		pageToken string,
+	) ([]model.NFT, string, error)
+	ListContractNFTs(
+		ctx context.Context,
+		address string,
+		pageSize int,
+		pageToken string,
+	) ([]model.NFT, string, error)
 }

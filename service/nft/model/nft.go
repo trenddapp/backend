@@ -1,6 +1,6 @@
 package model
 
 type NFT struct {
-	ContractAddress string
-	TokenID         string
+	ContractAddress string `json:"contract_address"`
+	TokenID         string `json:"token_id"`
 }

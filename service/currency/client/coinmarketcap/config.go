@@ -8,7 +8,7 @@ type Config struct {
 
 func NewConfig(cfg *config.YAML) (*Config, error) {
 	c := &Config{}
-	if err := cfg.Get("client.coinMarketCap").Populate(c); err != nil {
+	if err := cfg.Get("clients.coinmarketcap").Populate(c); err != nil {
 		return nil, err
 	}
 
