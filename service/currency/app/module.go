@@ -3,9 +3,9 @@ package app
 import (
 	"go.uber.org/fx"
 
-	"github.com/dapp-z/backend/pkg/app"
-	"github.com/dapp-z/backend/service/currency/client/coinmarketcap"
-	"github.com/dapp-z/backend/service/currency/http"
+	"github.com/trenddapp/backend/pkg/app"
+	"github.com/trenddapp/backend/service/currency/client/coinmarketcap"
+	"github.com/trenddapp/backend/service/currency/http"
 )
 
 var BaseModule = fx.Options(

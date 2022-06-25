@@ -1,6 +1,6 @@
 package main
 
-import "github.com/dapp-z/backend/service/currency/cmd"
+import "github.com/trenddapp/backend/service/currency/cmd"
 
 func main() {
 	cmd.Execute()

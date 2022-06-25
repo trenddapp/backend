@@ -1,6 +1,6 @@
 package main
 
-import "github.com/dapp-z/backend/service/nft/cmd"
+import "github.com/trenddapp/backend/service/nft/cmd"
 
 func main() {
 	cmd.Execute()

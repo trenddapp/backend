@@ -3,8 +3,8 @@ package app
 import (
 	"go.uber.org/fx"
 
-	"github.com/dapp-z/backend/pkg/config"
-	"github.com/dapp-z/backend/pkg/http"
+	"github.com/trenddapp/backend/pkg/config"
+	"github.com/trenddapp/backend/pkg/http"
 )
 
 var BaseModule = fx.Options(

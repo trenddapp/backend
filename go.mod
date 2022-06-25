@@ -1,4 +1,4 @@
-module github.com/dapp-z/backend
+module github.com/trenddapp/backend
 
 go 1.18
 

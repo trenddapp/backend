@@ -6,14 +6,15 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
-	"github.com/dapp-z/backend/service/nft/model"
+	"github.com/trenddapp/backend/pkg/paginator"
+	"github.com/trenddapp/backend/service/nft/model"
 )
 
 const (
-	StatusOK = "1"
-	URL      = "https://api-rinkeby.etherscan.io/api"
+	URL = "https://api-rinkeby.etherscan.io/api"
 )
 
 var (
@@ -32,10 +33,28 @@ func NewClient(config *Config) Client {
 	}
 }
 
-func (c *client) GetAccountNFTs(ctx context.Context, address string) ([]model.NFT, error) {
+func (c *client) ListAccountNFTs(
+	ctx context.Context,
+	address string,
+	pageSize int,
+	pageToken string,
+) ([]model.NFT, string, error) {
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, URL+"", http.NoBody)
 	if err != nil {
-		return nil, err
+		return nil, "", err
+	}
+
+	page := 1
+	if pageToken != "" {
+		id, _, err := paginator.ParsePageToken(pageToken)
+		if err != nil {
+			return nil, "", err
+		}
+
+		page, err = strconv.Atoi(id)
+		if err != nil {
+			return nil, "", err
+		}
 	}
 
 	query := request.URL.Query()
@@ -43,59 +62,49 @@ func (c *client) GetAccountNFTs(ctx context.Context, address string) ([]model.NF
 	query.Add("address", address)
 	query.Add("apikey", c.apiKey)
 	query.Add("module", "account")
+	query.Add("offset", strconv.Itoa(pageSize))
+	query.Add("page", strconv.Itoa(page))
 	request.URL.RawQuery = query.Encode()
 
 	response, err := c.httpClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return nil, ErrUnknown
+		return nil, "", ErrUnknown
 	}
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	var result struct {
-		Status string `json:"status"`
-
-		// Result is an array when status is ok.
-		// Result is a string when status is non-ok.
-		Result json.RawMessage `json:"result"`
+		Transactions []struct {
+			ContractAddress string `json:"contractAddress"`
+			To              string `json:"to"`
+			TokenID         string `json:"tokenID"`
+		} `json:"result"`
 	}
 
 	if err := json.Unmarshal(body, &result); err != nil {
-		return nil, err
-	}
-
-	if result.Status != StatusOK {
-		var message string
-
-		if err := json.Unmarshal(result.Result, &message); err != nil {
-			return nil, err
+		var result struct {
+			Message string `json:"message"`
 		}
 
-		return nil, errors.New(message)
+		if err := json.Unmarshal(body, &result); err != nil {
+			return nil, "", err
+		}
+
+		return nil, "", errors.New(result.Message)
 	}
 
-	var transactions []struct {
-		ContractAddress string `json:"contractAddress"`
-		To              string `json:"to"`
-		TokenID         string `json:"tokenID"`
-	}
+	nfts := make([]model.NFT, 0, len(result.Transactions))
 
-	if err := json.Unmarshal(result.Result, &transactions); err != nil {
-		return nil, err
-	}
-
-	nfts := make([]model.NFT, 0, len(transactions))
-
-	for _, transaction := range transactions {
+	for _, transaction := range result.Transactions {
 		if !strings.EqualFold(address, transaction.To) {
 			continue
 		}
@@ -106,5 +115,10 @@ func (c *client) GetAccountNFTs(ctx context.Context, address string) ([]model.NF
 		})
 	}
 
-	return nfts, nil
+	nextPageToken := ""
+	if len(nfts) == pageSize {
+		nextPageToken = paginator.GeneratePageToken(strconv.Itoa(page+1), "UNSPECIFIED")
+	}
+
+	return nfts, nextPageToken, nil
 }

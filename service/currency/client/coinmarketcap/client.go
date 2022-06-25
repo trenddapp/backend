@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/trenddapp/backend/service/currency/model"
 )
 
 const (
@@ -30,15 +32,15 @@ func NewClient(cfg *Config) Client {
 	}
 }
 
-func (c *client) GetConversionRate(ctx context.Context, symbol string) (float64, error) {
-	symbols := strings.Split(symbol, "-")
+func (c *client) GetRate(ctx context.Context, symbol string) (model.Rate, error) {
+	symbols := strings.Split(strings.ToUpper(symbol), "-")
 	if len(symbols) != 2 {
-		return 0, ErrInvalidSymbol
+		return model.Rate{}, ErrInvalidSymbol
 	}
 
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, URL+"/v2/tools/price-conversion", http.NoBody)
 	if err != nil {
-		return 0, err
+		return model.Rate{}, err
 	}
 
 	query := request.URL.Query()
@@ -50,18 +52,18 @@ func (c *client) GetConversionRate(ctx context.Context, symbol string) (float64,
 
 	response, err := c.httpClient.Do(request)
 	if err != nil {
-		return 0, err
+		return model.Rate{}, err
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return 0, ErrUnknown
+		return model.Rate{}, ErrUnknown
 	}
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		return 0, err
+		return model.Rate{}, err
 	}
 
 	var result struct {
@@ -73,17 +75,20 @@ func (c *client) GetConversionRate(ctx context.Context, symbol string) (float64,
 	}
 
 	if err := json.Unmarshal(body, &result); err != nil {
-		return 0, err
+		return model.Rate{}, err
 	}
 
 	if len(result.Data) == 0 {
-		return 0, ErrUnknown
+		return model.Rate{}, ErrUnknown
 	}
 
 	quote, ok := result.Data[0].Quote[symbols[1]]
 	if !ok {
-		return 0, ErrInvalidSymbol
+		return model.Rate{}, ErrInvalidSymbol
 	}
 
-	return quote.Price, nil
+	return model.Rate{
+		Symbol: symbol,
+		Value:  quote.Price,
+	}, nil
 }

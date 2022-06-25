@@ -5,7 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/dapp-z/backend/service/currency/client/coinmarketcap"
+	internalhttp "github.com/trenddapp/backend/pkg/http"
+	"github.com/trenddapp/backend/service/currency/client/coinmarketcap"
 )
 
 type Server struct {
@@ -18,27 +19,23 @@ func NewServer(clientCoinMarketCap coinmarketcap.Client) *Server {
 	}
 }
 
-func (s *Server) GetConversionRate(c *gin.Context) {
-	symbol := c.Param("symbol")
-
-	conversionRate, err := s.clientCoinMarketCap.GetConversionRate(c, symbol)
-	if err != nil {
-		if err == coinmarketcap.ErrInvalidSymbol {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid symbol",
-			})
-
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
-		})
-
+func (s *Server) GetRate(ctx *gin.Context) {
+	symbol := ctx.Param("symbol")
+	if symbol == "" {
+		internalhttp.NewError(http.StatusBadRequest, "invalid symbol").WriteJSON(ctx)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"conversion_rate": conversionRate,
-	})
+	rate, err := s.clientCoinMarketCap.GetRate(ctx, symbol)
+	if err != nil {
+		if err == coinmarketcap.ErrInvalidSymbol {
+			internalhttp.NewError(http.StatusBadRequest, "invalid symbol").WriteJSON(ctx)
+			return
+		}
+
+		internalhttp.NewError(http.StatusInternalServerError, "internal server error").WriteJSON(ctx)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"rate": rate})
 }

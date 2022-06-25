@@ -3,10 +3,10 @@ package app
 import (
 	"go.uber.org/fx"
 
-	"github.com/dapp-z/backend/pkg/app"
-	"github.com/dapp-z/backend/service/nft/client/etherscan"
-	"github.com/dapp-z/backend/service/nft/client/nftport"
-	"github.com/dapp-z/backend/service/nft/http"
+	"github.com/trenddapp/backend/pkg/app"
+	"github.com/trenddapp/backend/service/nft/client/etherscan"
+	"github.com/trenddapp/backend/service/nft/client/nftport"
+	"github.com/trenddapp/backend/service/nft/http"
 )
 
 var BaseModule = fx.Options(

@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 
-	"github.com/dapp-z/backend/service/nft/app"
-	"github.com/dapp-z/backend/service/nft/http"
+	"github.com/trenddapp/backend/service/nft/app"
+	"github.com/trenddapp/backend/service/nft/http"
 )
 
 var serveHTTPCmd = &cobra.Command{
