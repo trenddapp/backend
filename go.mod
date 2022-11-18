@@ -6,6 +6,7 @@ require (
 	github.com/ethereum/go-ethereum v1.10.23
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.8.1
+	github.com/gofrs/uuid v4.3.1+incompatible
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/spf13/cobra v1.4.0
 	github.com/uptrace/bun v1.1.8
