@@ -32,3 +32,4 @@ jobs:
         bazelisk run //service/currency:publish
         bazelisk run //service/nft:publish
         bazelisk run //service/user:publish
+        bazelisk run //service/wordle:publish

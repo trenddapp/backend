@@ -1,0 +1,31 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
+
+go_library(
+    name = "wordle_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/trenddapp/backend/service/wordle",
+    visibility = ["//visibility:private"],
+    deps = ["//service/wordle/cmd"],
+)
+
+go_binary(
+    name = "wordle",
+    embed = [":wordle_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_image(
+    name = "wordle_image",
+    binary = ":wordle",
+)
+
+container_push(
+    name = "publish",
+    format = "Docker",
+    image = ":wordle_image",
+    registry = "docker.io",
+    repository = "parsaakbari1209/trenddapp-backend-wordle",
+    tag = "latest",
+)
