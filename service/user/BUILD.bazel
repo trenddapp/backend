@@ -1,0 +1,31 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
+
+go_library(
+    name = "user_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/trenddapp/backend/service/user",
+    visibility = ["//visibility:private"],
+    deps = ["//service/user/cmd"],
+)
+
+go_binary(
+    name = "user",
+    embed = [":user_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_image(
+    name = "user_image",
+    binary = ":user",
+)
+
+container_push(
+    name = "publish",
+    format = "Docker",
+    image = ":user_image",
+    registry = "docker.io",
+    repository = "parsaakbari1209/trenddapp-backend-user",
+    tag = "latest",
+)
