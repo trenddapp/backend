@@ -301,12 +301,7 @@ def go_dependencies():
         sum = "h1:IcB+Aqpx/iMHu5Yooh7jEzJk1JZ7Pjtmys2ukPr7EeM=",
         version = "v0.9.7",
     )
-    go_repository(
-        name = "com_github_gofrs_uuid",
-        importpath = "github.com/gofrs/uuid",
-        sum = "h1:CaSVZxm5B+7o45rtab4jC2G37WGYX1zQfuU2i6DSvnc=",
-        version = "v4.3.0+incompatible",
-    )
+
     go_repository(
         name = "com_github_golang_jwt_jwt_v4",
         importpath = "github.com/golang-jwt/jwt/v4",

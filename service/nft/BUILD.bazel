@@ -24,8 +24,8 @@ go_image(
 container_push(
     name = "publish",
     format = "Docker",
+    image = ":nft_image",
     registry = "docker.io",
     repository = "parsaakbari1209/trenddapp-backend-nft",
-    image = ":nft_image",
     tag = "latest",
 )
