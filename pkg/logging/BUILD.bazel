@@ -1,0 +1,20 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "logging",
+    srcs = [
+        "config.go",
+        "module.go",
+        "provider.go",
+    ],
+    importpath = "github.com/trenddapp/backend/pkg/logging",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/meta",
+        "@org_uber_go_config//:config",
+        "@org_uber_go_fx//:fx",
+        "@org_uber_go_fx//fxevent",
+        "@org_uber_go_zap//:zap",
+        "@org_uber_go_zap//zapcore",
+    ],
+)

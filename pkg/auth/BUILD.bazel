@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "auth",
+    srcs = [
+        "jwt.go",
+        "nonce.go",
+        "signature.go",
+    ],
+    importpath = "github.com/trenddapp/backend/pkg/auth",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_ethereum_go_ethereum//accounts",
+        "@com_github_ethereum_go_ethereum//common/hexutil",
+        "@com_github_ethereum_go_ethereum//crypto",
+        "@com_github_golang_jwt_jwt_v4//:jwt",
+    ],
+)
