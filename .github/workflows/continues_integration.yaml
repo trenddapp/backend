@@ -1,0 +1,28 @@
+name: Continues Integration
+on:
+  pull_request:
+    branches:
+    - main
+  workflow_dispatch:
+jobs:
+  golang:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+    - name: Bazel Cache
+      id: bazel-cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/bazel
+        key: ${{ runner.os }}-bazel-cache
+    - name: Install Bazelisk
+      run: |
+        curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.15.0/bazelisk-linux-amd64"
+        mkdir -p "${GITHUB_WORKSPACE}/bin/"
+        mv bazelisk-linux-amd64 "${GITHUB_WORKSPACE}/bin/bazelisk"
+        chmod +x "${GITHUB_WORKSPACE}/bin/bazelisk"
+    - name: Build Targets
+      run: bazelisk build //...
+    - name: Run Tests
+      run: bazelisk test //...

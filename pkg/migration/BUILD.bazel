@@ -1,0 +1,17 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "migration",
+    srcs = [
+        "module.go",
+        "provider.go",
+    ],
+    importpath = "github.com/trenddapp/backend/pkg/migration",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_uptrace_bun//:bun",
+        "@com_github_uptrace_bun//migrate",
+        "@org_uber_go_fx//:fx",
+        "@org_uber_go_zap//:zap",
+    ],
+)

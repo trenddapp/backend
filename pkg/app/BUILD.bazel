@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "app",
+    srcs = ["module.go"],
+    importpath = "github.com/trenddapp/backend/pkg/app",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/config",
+        "//pkg/http",
+        "//pkg/logging",
+        "//pkg/migration",
+        "@org_uber_go_fx//:fx",
+    ],
+)

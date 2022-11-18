@@ -1,0 +1,19 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "etherscan",
+    srcs = [
+        "client.go",
+        "config.go",
+        "interface.go",
+        "module.go",
+    ],
+    importpath = "github.com/trenddapp/backend/service/nft/client/etherscan",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/paginator",
+        "//service/nft/model",
+        "@org_uber_go_config//:config",
+        "@org_uber_go_fx//:fx",
+    ],
+)
