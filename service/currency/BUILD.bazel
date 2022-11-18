@@ -24,8 +24,8 @@ go_image(
 container_push(
     name = "publish",
     format = "Docker",
+    image = ":currency_image",
     registry = "docker.io",
     repository = "parsaakbari1209/trenddapp-backend-currency",
-    image = ":currency_image",
     tag = "latest",
 )
