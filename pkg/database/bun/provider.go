@@ -1,7 +1,6 @@
 package bun
 
 import (
-	"crypto/tls"
 	"database/sql"
 
 	"github.com/uptrace/bun"
@@ -19,26 +18,10 @@ func ProvideConfig(cfg *config.YAML) (Config, error) {
 }
 
 func ProvideDB(cfg Config, logger *zap.Logger) *bun.DB {
-	var tlsConfig *tls.Config
-
-	switch cfg.SSLMode {
-	case "verify-ca", "verify-full":
-		tlsConfig = &tls.Config{}
-	case "allow", "prefer", "require":
-		tlsConfig = &tls.Config{InsecureSkipVerify: true} //nolint
-	default:
-		tlsConfig = nil
-	}
-
-	sqldb := sql.OpenDB(pgdriver.NewConnector(
-		pgdriver.WithAddr(cfg.Address),
-		pgdriver.WithDatabase(cfg.Database),
-		pgdriver.WithPassword(cfg.Password),
-		pgdriver.WithUser(cfg.User),
-		pgdriver.WithTLSConfig(tlsConfig),
-	))
-
-	db := bun.NewDB(sqldb, pgdialect.New())
+	db := bun.NewDB(
+		sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(cfg.DSN))),
+		pgdialect.New(),
+	)
 
 	if cfg.Debug {
 		db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
