@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://trenddap.com">
+  <a href="https://trenddapp.com">
     <img width="110" height="110" alt="favicon" src="https://user-images.githubusercontent.com/31795824/202284118-1d661634-6665-4fa4-89c1-5eb9131106d3.png">
     <h3 align="center">Trenddapp</h3>
   </a>
