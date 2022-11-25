@@ -28,7 +28,7 @@ func NewConfig(cfg *config.YAML) (*Config, error) {
 func NewRouter(cfg *Config, lifecycle fx.Lifecycle) *gin.Engine {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
-	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "Authorization")
+	corsConfig.AddAllowHeaders("Authorization")
 	corsHandler := cors.New(corsConfig)
 
 	router := gin.Default()
