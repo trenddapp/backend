@@ -31,6 +31,7 @@ func (r repository) GetNonceByUserID(ctx context.Context, userID string) (model.
 		NewSelect().
 		Model(&out).
 		Where("user_id = ?", userID).
+		Order("created_at DESC").
 		Limit(1).
 		Scan(ctx)
 	if err != nil {

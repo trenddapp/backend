@@ -1,12 +1,12 @@
 package http
 
 import (
-	"log"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 
 	"github.com/trenddapp/backend/pkg/auth"
 	internalhttp "github.com/trenddapp/backend/pkg/http"
@@ -16,15 +16,18 @@ import (
 )
 
 type Server struct {
+	logger          *zap.Logger
 	nonceRepository nonce.Repository
 	userRepository  user.Repository
 }
 
 func NewServer(
+	logger *zap.Logger,
 	nonceRepository nonce.Repository,
 	userRepository user.Repository,
 ) *Server {
 	return &Server{
+		logger:          logger,
 		nonceRepository: nonceRepository,
 		userRepository:  userRepository,
 	}
@@ -91,25 +94,46 @@ func (s Server) CreateSession(ctx *gin.Context) {
 
 	user, err := s.userRepository.GetUser(ctx, userID)
 	if err != nil {
+		s.logger.Error(
+			"failed to get user",
+			zap.String("id", userID),
+			zap.Error(err),
+		)
 		internalhttp.NewError(http.StatusNotFound, "user not found").WriteJSON(ctx)
 		return
 	}
 
 	nonce, err := s.nonceRepository.GetNonceByUserID(ctx, user.ID)
 	if err != nil {
+		s.logger.Error(
+			"failed to get nonce by user id",
+			zap.String("id", userID),
+			zap.Error(err),
+		)
 		internalhttp.NewError(http.StatusNotFound, "nonce not found").WriteJSON(ctx)
 		return
 	}
 
 	defer func() {
 		if _, err := s.nonceRepository.DeleteNonce(ctx, nonce.ID); err != nil {
-			// TODO: Use a better logger.
-			log.Fatal(err)
+			s.logger.Error(
+				"failed to delete nonce",
+				zap.String("id", nonce.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 
 	isValid, err := auth.VerifySignature(user.Address, nonce.Value, body.SignedMessage)
 	if !isValid || err != nil {
+		s.logger.Error(
+			"failed to verify wallet signature",
+			zap.String("address", user.Address),
+			zap.String("nonce", nonce.Value),
+			zap.String("signature", body.SignedMessage),
+			zap.String("user_id", userID),
+			zap.Error(err),
+		)
 		internalhttp.NewError(http.StatusUnauthorized, "invalid credentials").WriteJSON(ctx)
 		return
 	}
@@ -122,6 +146,11 @@ func (s Server) CreateSession(ctx *gin.Context) {
 
 	token, err := auth.NewToken(claims)
 	if err != nil {
+		s.logger.Error(
+			"failed to create a new token",
+			zap.String("user_id", userID),
+			zap.Error(err),
+		)
 		internalhttp.NewError(http.StatusInternalServerError, "failed to generate JWT").WriteJSON(ctx)
 		return
 	}

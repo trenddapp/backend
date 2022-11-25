@@ -17,5 +17,6 @@ go_library(
         "//service/user/repository/user",
         "@com_github_gin_gonic_gin//:gin",
         "@org_uber_go_fx//:fx",
+        "@org_uber_go_zap//:zap",
     ],
 )
