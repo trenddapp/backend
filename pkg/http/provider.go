@@ -3,13 +3,13 @@ package http
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/config"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 type Config struct {
@@ -25,7 +25,7 @@ func NewConfig(cfg *config.YAML) (*Config, error) {
 	return c, nil
 }
 
-func NewRouter(cfg *Config, lifecycle fx.Lifecycle) *gin.Engine {
+func NewRouter(cfg *Config, lifecycle fx.Lifecycle, logger *zap.Logger) *gin.Engine {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
 	corsConfig.AddAllowHeaders("Authorization")
@@ -43,8 +43,7 @@ func NewRouter(cfg *Config, lifecycle fx.Lifecycle) *gin.Engine {
 		OnStart: func(context.Context) error {
 			go func() {
 				if err := server.ListenAndServe(); err != nil {
-					// TODO: Log error.
-					log.Fatal(err)
+					logger.Error("failed to start router", zap.Error(err))
 				}
 			}()
 
