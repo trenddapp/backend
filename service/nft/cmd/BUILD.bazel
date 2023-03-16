@@ -10,8 +10,8 @@ go_library(
     importpath = "github.com/trenddapp/backend/service/nft/cmd",
     visibility = ["//visibility:public"],
     deps = [
-        "//service/nft/app",
-        "//service/nft/http",
+        "//service/nft/pkg/app",
+        "//service/nft/pkg/http",
         "@com_github_spf13_cobra//:cobra",
         "@org_uber_go_fx//:fx",
     ],

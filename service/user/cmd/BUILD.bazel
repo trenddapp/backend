@@ -10,8 +10,8 @@ go_library(
     importpath = "github.com/trenddapp/backend/service/user/cmd",
     visibility = ["//visibility:public"],
     deps = [
-        "//service/user/app",
-        "//service/user/http",
+        "//service/user/pkg/app",
+        "//service/user/pkg/http",
         "@com_github_spf13_cobra//:cobra",
         "@org_uber_go_fx//:fx",
     ],

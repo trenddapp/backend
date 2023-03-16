@@ -1,0 +1,22 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "http",
+    srcs = [
+        "module.go",
+        "register.go",
+        "server.go",
+    ],
+    importpath = "github.com/trenddapp/backend/service/user/pkg/http",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/auth",
+        "//pkg/http",
+        "//service/user/pkg/model",
+        "//service/user/pkg/repository/nonce",
+        "//service/user/pkg/repository/user",
+        "@com_github_gin_gonic_gin//:gin",
+        "@org_uber_go_fx//:fx",
+        "@org_uber_go_zap//:zap",
+    ],
+)

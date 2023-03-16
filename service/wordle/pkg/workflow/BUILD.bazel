@@ -1,0 +1,17 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "workflow",
+    srcs = [
+        "module.go",
+        "workflow.go",
+    ],
+    importpath = "github.com/trenddapp/backend/service/wordle/pkg/workflow",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//service/wordle/pkg/model",
+        "//service/wordle/pkg/repository/word",
+        "//service/wordle/pkg/repository/wordle",
+        "@org_uber_go_fx//:fx",
+    ],
+)

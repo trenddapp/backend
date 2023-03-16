@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "migration",
+    srcs = [
+        "embed.go",
+        "module.go",
+    ],
+    embedsrcs = [
+        "20220101000001_users.up.sql",
+        "20220101000001_users.down.sql",
+    ],
+    importpath = "github.com/trenddapp/backend/service/user/pkg/migration",
+    visibility = ["//visibility:public"],
+    deps = ["//pkg/migration"],
+)
