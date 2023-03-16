@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 
-	"github.com/trenddapp/backend/service/wordle/app"
-	"github.com/trenddapp/backend/service/wordle/http"
+	"github.com/trenddapp/backend/service/wordle/pkg/app"
+	"github.com/trenddapp/backend/service/wordle/pkg/http"
 )
 
 var serveHTTPCmd = &cobra.Command{

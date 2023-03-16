@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "app",
+    srcs = ["module.go"],
+    importpath = "github.com/trenddapp/backend/service/wordle/pkg/app",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/app",
+        "//pkg/database/bun",
+        "//service/wordle/pkg/http",
+        "//service/wordle/pkg/migration",
+        "//service/wordle/pkg/repository/word",
+        "//service/wordle/pkg/repository/wordle",
+        "//service/wordle/pkg/workflow",
+        "@org_uber_go_fx//:fx",
+    ],
+)

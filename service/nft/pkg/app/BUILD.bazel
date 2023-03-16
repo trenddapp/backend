@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "app",
+    srcs = ["module.go"],
+    importpath = "github.com/trenddapp/backend/service/nft/pkg/app",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/app",
+        "//service/nft/pkg/client/etherscan",
+        "//service/nft/pkg/client/nftport",
+        "//service/nft/pkg/http",
+        "@org_uber_go_fx//:fx",
+    ],
+)

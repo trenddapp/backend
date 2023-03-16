@@ -10,8 +10,8 @@ go_library(
     importpath = "github.com/trenddapp/backend/service/currency/cmd",
     visibility = ["//visibility:public"],
     deps = [
-        "//service/currency/app",
-        "//service/currency/http",
+        "//service/currency/pkg/app",
+        "//service/currency/pkg/http",
         "@com_github_spf13_cobra//:cobra",
         "@org_uber_go_fx//:fx",
     ],
