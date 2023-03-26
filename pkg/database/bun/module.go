@@ -5,6 +5,6 @@ import (
 )
 
 var BaseModule = fx.Options(
-	fx.Provide(ProvideConfig),
-	fx.Provide(ProvideDB),
+	fx.Provide(NewConfig),
+	fx.Provide(NewDB),
 )

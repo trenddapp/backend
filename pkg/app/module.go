@@ -10,8 +10,8 @@ import (
 )
 
 var BaseModule = fx.Options(
-	config.Module,
-	http.Module,
+	config.BaseModule,
+	http.BaseModule,
 	logging.BaseModule,
 	migration.BaseModule,
 )

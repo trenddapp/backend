@@ -2,7 +2,7 @@ package http
 
 import "go.uber.org/fx"
 
-var Module = fx.Provide(
+var BaseModule = fx.Provide(
 	NewConfig,
 	NewRouter,
 )

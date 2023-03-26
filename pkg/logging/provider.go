@@ -9,24 +9,25 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func ProvideConfig(cfg *config.YAML) (Config, error) {
+type Config struct {
+	Driver string `yaml:"driver"`
+	Level  string `yaml:"level"`
+}
+
+func NewConfig(cfg *config.YAML) (Config, error) {
 	var c Config
 	err := cfg.Get("logging").Populate(&c)
 	return c, err
 }
 
-func ProvideZapConfig(cfg Config) zap.Config {
+func NewLogger(cfg Config, lifecycle fx.Lifecycle) (*zap.Logger, error) {
+	zapConfig := zap.NewProductionConfig()
 	if cfg.Driver == "dev" {
-		return zap.NewDevelopmentConfig()
+		zapConfig = zap.NewDevelopmentConfig()
 	}
 
-	return zap.NewProductionConfig()
-}
-
-func ProvideLogger(cfg Config, lifecycle fx.Lifecycle, zapConfig zap.Config) (*zap.Logger, error) {
 	if cfg.Level != "" {
 		var level zapcore.Level
-
 		if err := level.Set(cfg.Level); err != nil {
 			return nil, err
 		}

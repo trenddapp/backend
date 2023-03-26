@@ -7,9 +7,8 @@ import (
 )
 
 var BaseModule = fx.Options(
-	fx.Provide(ProvideConfig),
-	fx.Provide(ProvideZapConfig),
-	fx.Provide(ProvideLogger),
+	fx.Provide(NewConfig),
+	fx.Provide(NewLogger),
 	fx.WithLogger(func(logger *zap.Logger) fxevent.Logger {
 		return &fxevent.ZapLogger{Logger: logger}
 	}),
