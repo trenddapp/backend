@@ -11,13 +11,18 @@ import (
 	"go.uber.org/zap"
 )
 
-func ProvideConfig(cfg *config.YAML) (Config, error) {
+type Config struct {
+	Debug bool   `yaml:"debug"`
+	DSN   string `yaml:"dsn"`
+}
+
+func NewConfig(cfg *config.YAML) (Config, error) {
 	var c Config
 	err := cfg.Get("databases.pg").Populate(&c)
 	return c, err
 }
 
-func ProvideDB(cfg Config, logger *zap.Logger) *bun.DB {
+func NewDB(cfg Config, logger *zap.Logger) *bun.DB {
 	db := bun.NewDB(
 		sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(cfg.DSN))),
 		pgdialect.New(),

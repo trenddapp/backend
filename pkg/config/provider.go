@@ -12,7 +12,17 @@ func NewYAML() (*config.YAML, error) {
 		config.Expand(os.LookupEnv),
 	}
 
-	for _, path := range generatePaths("base") {
+	paths := []string{}
+
+	for _, filename := range []string{"base"} {
+		paths = append(
+			paths,
+			"/config/"+filename+".yaml",
+			"./config/"+filename+".yaml",
+		)
+	}
+
+	for _, path := range paths {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			continue
 		}
@@ -26,18 +36,4 @@ func NewYAML() (*config.YAML, error) {
 	)
 
 	return config.NewYAML(options...)
-}
-
-func generatePaths(filenames ...string) []string {
-	paths := []string{}
-
-	for _, filename := range filenames {
-		paths = append(
-			paths,
-			"/config/"+filename+".yaml",
-			"./config/"+filename+".yaml",
-		)
-	}
-
-	return paths
 }

@@ -1,5 +1,12 @@
 package migration
 
-import "github.com/trenddapp/backend/pkg/migration"
+import (
+	"embed"
 
-var Module = migration.CreateMigrationModule(fsys)
+	"github.com/trenddapp/backend/pkg/migration"
+)
+
+//go:embed *.sql
+var fsys embed.FS
+
+var Module = migration.NewModule(fsys)

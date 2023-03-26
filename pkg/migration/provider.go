@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func CreateMigrationModule(fsys fs.FS) fx.Option {
+func NewModule(fsys fs.FS) fx.Option {
 	return fx.Invoke(
 		func(
 			db *bun.DB,
